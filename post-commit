@@ -1,0 +1,8 @@
+#!/bin/sh
+data_dir="${XDG_DATA_HOME:-"$HOME/.local/share"}/gitplant"
+mkdir -p $data_dir
+touch $data_dir/events.txt
+printf '%s:%s\n' \
+    "$(basename "$(git rev-parse --show-toplevel)")" \
+    "$(git log --max-count=1 --format=%H)" \
+    >> "$data_dir/events.txt"
