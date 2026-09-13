@@ -8,4 +8,6 @@ git config --global core.hooksPath ~/.config/git/hooks
 
 chmod u=wrx ~/.config/git/hooks/post-commit
 
-~/.config/git/hooks/post-commit
+
+data_dir="${XDG_DATA_HOME:-"$HOME/.local/share"}/gitplant"
+cp saves.txt "$data_dir/saves.txt"
