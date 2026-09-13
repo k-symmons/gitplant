@@ -71,7 +71,7 @@ int count_commit(t_paths *paths)
 	if(fd == -1)
 	{
 		printf("failed to read file\n");
-		return (0);
+		exit(1);
 	}
 	while((n = read(fd,buf,sizeof(buf))) > 0)
 	{
@@ -87,14 +87,34 @@ int count_commit(t_paths *paths)
 	return (count);
 }
 
+// read 1 byte until it reaches the line I want to be on, then reads 1024 byts. Aweful implementation but its gonna do for now
+time_t get_commit_time(t_paths *paths, int commit_line)
+{
+	time_t commit_time = 0;
+	int fd;
+	char buf[1024];
+	ssize_t n;
 
-/* time_t get_commit_time(char , int commit_line) */
-/* { */
-/* 	while(commit_line) */
-/* 	{ */
+	fd = open(paths->log_path, O_RDONLY);
 
-/* 	} */
-/* } */
+	if(fd == -1)
+	{
+		printf("failed to read file\n");
+		exit(1);
+	}
+	while((n = read(fd,buf,sizeof(char))) > 0 && (commit_line-1)) //to codex: I need help here!
+	{
+		if  (buf[0] == '\n')
+			commit_line--;
+	}
+	read(fd,buf,sizeof(buf));
+	int i = 0;
+	while(buf[i] != ' ')
+		i++;
+	i++;
+	commit_time = (time_t)strtol(&buf[i], NULL, 10);
+	return (commit_time);
+}
 
 
 int main()
@@ -106,11 +126,13 @@ int main()
 	get_save_path(&paths);
 	save.commits = count_commit(&paths);
 	save.now = time(NULL);
+	save.last_commit = get_commit_time(&paths, save.commits);
 
-	printf("%s\n", paths.data_path);
-	printf("%s\n", paths.save_path);
-	printf("%s\n", paths.log_path);
+	/* printf("%s\n", paths.data_path); */
+	/* printf("%s\n", paths.save_path); */
+	/* printf("%s\n", paths.log_path); */
 
 	printf("%zu\n", save.commits);
 	printf("%jd\n", (intmax_t)save.now);
+	printf("%jd\n", (intmax_t)save.last_commit);
 }
