@@ -99,7 +99,7 @@ time_t get_commit_time(t_paths *paths, int commit_line)
 
 	if(fd == -1)
 	{
-		printf("failed to read file\n");
+		printf("failed to read event file\n");
 		exit(1);
 	}
 	while((n = read(fd,buf,sizeof(char))) > 0 && (commit_line-1)) //to codex: I need help here!
@@ -116,6 +116,35 @@ time_t get_commit_time(t_paths *paths, int commit_line)
 	return (commit_time);
 }
 
+void read_save(t_paths *paths, t_save *save)
+{
+	int fd;
+	char buf[1024];
+	int i = 0;
+
+	fd = open(paths->save_path, O_RDONLY);
+
+	if(fd == -1)
+	{
+		printf("failed to read save file\n");
+		exit(1);
+	}
+	read(fd,buf,sizeof(buf));
+	while(buf[i] != ':')
+		i++;
+	i++;
+	save->commits = strtol(&buf[i], NULL, 10);
+	while(buf[i] != ':')
+		i++;
+	i++;
+	save->points = strtol(&buf[i], NULL, 10);
+	while(buf[i] != ':')
+		i++;
+	i++;
+	save->last_commit = (time_t)strtol(&buf[i], NULL, 10);
+
+}
+
 
 int main()
 {
@@ -124,15 +153,18 @@ int main()
 	get_path(&paths);
 	get_log_path(&paths);
 	get_save_path(&paths);
-	save.commits = count_commit(&paths);
 	save.now = time(NULL);
-	save.last_commit = get_commit_time(&paths, save.commits);
+	read_save(&paths, &save);
 
 	/* printf("%s\n", paths.data_path); */
-	/* printf("%s\n", paths.save_path); */
 	/* printf("%s\n", paths.log_path); */
 
-	printf("%zu\n", save.commits);
-	printf("%jd\n", (intmax_t)save.now);
+	/* printf("%jd\n", (intmax_t)save.now); */
+
 	printf("%jd\n", (intmax_t)save.last_commit);
+	printf("%zu\n", save.commits);
+	printf("%zu\n", save.points);
+
+	/* save.commits = count_commit(&paths); */
+	 /* save.last_commit = get_commit_time(&paths, save.commits); */
 }

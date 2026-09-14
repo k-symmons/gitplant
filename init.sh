@@ -10,4 +10,4 @@ chmod u=wrx ~/.config/git/hooks/post-commit
 
 
 data_dir="${XDG_DATA_HOME:-"$HOME/.local/share"}/gitplant"
-cp saves.txt "$data_dir/saves.txt"
+cp saves.txt "$data_dir/save.txt"
