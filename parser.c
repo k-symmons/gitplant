@@ -1,4 +1,5 @@
 # include "plant.h"
+#include <string.h>
 
 
 
@@ -48,17 +49,18 @@ time_t get_commit_time(t_paths *paths, int commit_line)
 	n = read(fd,buf,sizeof(char));
 	if(n == -1)
 		printf("failed to read event file");
-	while((commit_line-1))
+	while((n = read(fd,buf,sizeof(char))) > 0 && commit_line > 0)
 	{
 		if  (buf[0] == '\n')
 			commit_line--;
 	}
 	read(fd,buf,sizeof(buf));
 	int i = 0;
-	while(buf[i] != ' ')
+	while(buf[i] != ' ' && buf[i])
 		i++;
 	i++;
 	commit_time = (time_t)strtol(&buf[i], NULL, 10);
+	close(fd);
 	return (commit_time);
 }
 
@@ -91,6 +93,7 @@ void read_save(t_paths *paths, t_save *save)
 		i++;
 	i++;
 	save->last_commit = (time_t)strtol(&buf[i], NULL, 10);
+	close(fd);
 
 }
 void stoa_helper(char *string, ssize_t num, ssize_t i, ssize_t len)
@@ -108,6 +111,8 @@ char *stoa(ssize_t num)
 	int digit_count = 0;
 	char *string;
 
+
+
 	while(num/digit > 0)
 	{
 		digit_count++;
@@ -121,8 +126,15 @@ char *stoa(ssize_t num)
 		exit(1);
 	}
 
-	stoa_helper(string, num, 0, digit_count);
-	string[digit_count] = '\0';
+	if (num > 0)
+	{
+		stoa_helper(string, num, 0, digit_count);
+		string[digit_count] = '\0';
+	}
+	else
+	{
+		strcat(string,"0");
+	}
 	return (string);
 
 }
@@ -130,40 +142,49 @@ char *stoa(ssize_t num)
 void write_save(t_paths *paths, t_save *save)
 {
 	int fd;
-	char buf[1024];
+	char buf[1024] = "";
 	ssize_t n;
 
-	fd = open(paths->save_path, O_WRONLY);
+	fd = open(paths->save_path, O_WRONLY | O_TRUNC);
 
 	if(fd == -1)
 	{
 		printf("failed to open save file\n");
 		exit(1);
 	}
+	strcat(buf,"commits:" );
+	strcat(buf, stoa(save->commits));
+	strcat(buf, "\npoints:");
+	strcat(buf, stoa(save->points));
+	strcat(buf, "\nlastcommit:");
+	strcat(buf, stoa((ssize_t)save->last_commit));
 	n = write(fd,buf,sizeof(buf));
 	if(n == -1)
 		printf("failed to write event file");
-	strcat(buf,"commits:" );
-	strcat(buf, stoa(save->commits));
-
+	close(fd);
 }
 
 
 int main()
 {
-	/* t_save save; */
-	/* t_paths paths; */
-	/* get_save_path(&paths); */
-	/* save.now = time(NULL); */
+	t_save save;
+	t_paths paths;
+	get_path(&paths);
+	get_log_path(&paths);
+	get_save_path(&paths);
+	save.now = time(NULL);
 	/* read_save(&paths, &save); */
 
-	/* /\* printf("%s\n", paths.data_path); *\/ */
-	/* /\* printf("%s\n", paths.log_path); *\/ */
 
-	/* /\* printf("%jd\n", (intmax_t)save.now); *\/ */
 
-	/* printf("%zu\n", save.points); */
 
-	/* save.commits = count_commit(&paths); */
-	 /* save.last_commit = get_commit_time(&paths, save.commits); */
+
+	save.commits = count_commit(&paths);
+	save.last_commit = get_commit_time(&paths, save.commits);
+	save.points = 3;
+
+	printf("%d\n", (int)save.commits);
+	printf("%d\n", (int)save.last_commit);
+	printf("%d\n", (int)save.points);
+	write_save(&paths, &save);
 }
