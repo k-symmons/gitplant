@@ -4,6 +4,8 @@ SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 ARGS = -Wall -Wextra -Werror
 
+test : all
+	./$(NAME)
 
 all : $(NAME)
 
@@ -21,8 +23,5 @@ clean :
 	rm -f $(OBJS)
 
 re : fclean all
-
-test : all clean
-	$(CC) $(ARGS) test.c $(NAME)
 
 .PHONY: all clean fclean re
