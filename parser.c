@@ -1,61 +1,4 @@
-#include <limits.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <limits.h>
-
-
-typedef struct {
-	size_t commits;
-	size_t points;
-	time_t last_commit;
-	time_t now;
-}t_save;
-
-// I know I should not use PATH_MAX like an ape, but im too lazy to fix this
-typedef struct
-{
-	char data_path[PATH_MAX];
-	char log_path[PATH_MAX];
-	char save_path[PATH_MAX];
-}t_paths;
-
-// function to get where to put save files
-int get_path(t_paths *paths)
-{
-	const char *xdg_home;
-	const char *home;
-
-	xdg_home = getenv("XDG_DATA_HOME");
-
-	if (xdg_home != NULL && *xdg_home != '\0')
-		snprintf(paths->data_path, PATH_MAX, "%s/gitplant", xdg_home);
-	else
-	{
-		home = getenv("HOME");
-		if (home == NULL)
-			return (-1);
-		snprintf(paths->data_path, PATH_MAX, "%s/.local/share/gitplant", home);
-	}
-	return (0);
-}
-
-void get_log_path(t_paths *paths)
-{
-	strcpy(paths->log_path, paths->data_path);
-	strcat(paths->log_path, "/events.txt");
-}
-
-void get_save_path(t_paths *paths)
-{
-	strcpy(paths->save_path, paths->data_path);
-	strcat(paths->save_path, "/save.txt");
-}
+# include "plant.h"
 
 
 
@@ -150,31 +93,76 @@ void read_save(t_paths *paths, t_save *save)
 	save->last_commit = (time_t)strtol(&buf[i], NULL, 10);
 
 }
+void stoa_helper(char *string, ssize_t num, ssize_t i, ssize_t len)
+{
+	char c;
+	if (num > 9)
+		stoa_helper(string, num/10, i+1, len);
+	c = num % 10 + '0';
+	string[len-i-1] = c;
+}
 
-/* void write_save(t_paths *paths, t_save *save) */
-/* { */
+char *stoa(ssize_t num)
+{
+	int digit = 1;
+	int digit_count = 0;
+	char *string;
 
-/* } */
+	while(num/digit > 0)
+	{
+		digit_count++;
+		digit *= 10;
+	}
+	string = malloc(sizeof(char) * digit_count + 1);
+
+	if(string == 0)
+	{
+		write(1, "fuck", 4); //todo think of a better error message
+		exit(1);
+	}
+
+	stoa_helper(string, num, 0, digit_count);
+	string[digit_count] = '\0';
+	return (string);
+
+}
+
+void write_save(t_paths *paths, t_save *save)
+{
+	int fd;
+	char buf[1024];
+	ssize_t n;
+
+	fd = open(paths->save_path, O_WRONLY);
+
+	if(fd == -1)
+	{
+		printf("failed to open save file\n");
+		exit(1);
+	}
+	n = write(fd,buf,sizeof(buf));
+	if(n == -1)
+		printf("failed to write event file");
+	strcat(buf,"commits:" );
+	strcat(buf, stoa(save->commits));
+
+}
 
 
 int main()
 {
-	t_save save;
-	t_paths paths;
-	get_path(&paths);
-	get_log_path(&paths);
-	get_save_path(&paths);
-	save.now = time(NULL);
-	read_save(&paths, &save);
+	/* t_save save; */
+	/* t_paths paths; */
+	/* get_save_path(&paths); */
+	/* save.now = time(NULL); */
+	/* read_save(&paths, &save); */
 
-	/* printf("%s\n", paths.data_path); */
-	/* printf("%s\n", paths.log_path); */
+	/* /\* printf("%s\n", paths.data_path); *\/ */
+	/* /\* printf("%s\n", paths.log_path); *\/ */
 
-	/* printf("%jd\n", (intmax_t)save.now); */
+	/* /\* printf("%jd\n", (intmax_t)save.now); *\/ */
 
-	printf("%jd\n", (intmax_t)save.last_commit);
-	printf("%zu\n", save.commits);
-	printf("%zu\n", save.points);
+	/* printf("%zu\n", save.points); */
 
 	/* save.commits = count_commit(&paths); */
 	 /* save.last_commit = get_commit_time(&paths, save.commits); */
