@@ -1,4 +1,4 @@
-#include <linux/limits.h>
+#include <limits.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -99,10 +99,13 @@ time_t get_commit_time(t_paths *paths, int commit_line)
 
 	if(fd == -1)
 	{
-		printf("failed to read event file\n");
+		printf("failed to open event file\n");
 		exit(1);
 	}
-	while((n = read(fd,buf,sizeof(char))) > 0 && (commit_line-1)) //to codex: I need help here!
+	n = read(fd,buf,sizeof(char));
+	if(n == -1)
+		printf("failed to read event file");
+	while((commit_line-1))
 	{
 		if  (buf[0] == '\n')
 			commit_line--;
@@ -121,15 +124,18 @@ void read_save(t_paths *paths, t_save *save)
 	int fd;
 	char buf[1024];
 	int i = 0;
+	ssize_t n;
 
 	fd = open(paths->save_path, O_RDONLY);
 
 	if(fd == -1)
 	{
-		printf("failed to read save file\n");
+		printf("failed to open save file\n");
 		exit(1);
 	}
-	read(fd,buf,sizeof(buf));
+	n = read(fd,buf,sizeof(buf));
+	if(n == -1)
+		printf("failed to read event file");
 	while(buf[i] != ':')
 		i++;
 	i++;
@@ -144,6 +150,11 @@ void read_save(t_paths *paths, t_save *save)
 	save->last_commit = (time_t)strtol(&buf[i], NULL, 10);
 
 }
+
+/* void write_save(t_paths *paths, t_save *save) */
+/* { */
+
+/* } */
 
 
 int main()
