@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <string.h>
 
 
 typedef struct {
