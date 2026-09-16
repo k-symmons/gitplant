@@ -37,6 +37,7 @@ time_t get_commit_time(t_paths *paths, int commit_line)
 	int fd;
 	char buf[1024];
 	ssize_t n;
+	commit_line --;
 
 	fd = open(paths->log_path, O_RDONLY);
 
@@ -95,7 +96,7 @@ void read_save(t_paths *paths, t_save *save)
 	close(fd);
 
 }
-void stoa_helper(char *string, ssize_t num, ssize_t i, ssize_t len)
+void stoa_helper(char *string, long long num, ssize_t i, ssize_t len)
 {
 	char c;
 	if (num > 9)
@@ -104,9 +105,9 @@ void stoa_helper(char *string, ssize_t num, ssize_t i, ssize_t len)
 	string[len-i-1] = c;
 }
 
-char *stoa(ssize_t num)
+char *stoa(long long num)
 {
-	int digit = 1;
+	long long digit = 1;
 	int digit_count = 0;
 	char *string;
 
@@ -157,7 +158,7 @@ void write_save(t_paths *paths, t_save *save)
 	strcat(buf, stoa(save->points));
 	strcat(buf, "\nlastcommit:");
 	strcat(buf, stoa((ssize_t)save->last_commit));
-	n = write(fd,buf,sizeof(buf));
+	n = write(fd,buf, (strlen(buf) + 1));
 	if(n == -1)
 		printf("failed to write event file");
 	close(fd);
@@ -190,8 +191,9 @@ int main()
 			else
 				save.points += (log_commit_count-save.commits) *multi_base;
 			// bug: if the newest commit is older than 24h compared to save.last_commit, all commits after last commits get multi_24h
+			save.commits = log_commit_count;
 			save.last_commit = log_last_commit;
-			write(1, "change", 6);
+			write(1, "change\n", 7);
 		}
 		write_save(&paths, &save);
 		write(1, "looping", 7);

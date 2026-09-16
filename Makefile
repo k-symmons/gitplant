@@ -2,7 +2,7 @@ NAME = gitplant.a
 CC = gcc
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
-ARGS = -Wall -Wextra -Werror
+ARGS = -Wall -Wextra -Werror -ftrivial-auto-var-init=zero
 
 
 all : $(NAME)
