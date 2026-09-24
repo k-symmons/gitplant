@@ -1,4 +1,4 @@
-<p align="right">
+<p align="left">
   <a href="README.md">English</a> |
   <a href="README_ja.md">日本語</a>
 </p>
@@ -134,8 +134,3 @@ Instead of looking at commit counts as just numbers, gitplant gives you a simple
 * Shell Script
 * Git
 * Git Hooks
-* Terminal / TUI
-
-## License
-
-Add your license informat
