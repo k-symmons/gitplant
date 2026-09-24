@@ -59,12 +59,23 @@ void write_save(t_paths *paths, t_save *save)
 		printf("failed to open save file\n");
 		exit(1);
 	}
+
+	char *commits = stoa(save->commits);
+	char *points = stoa(save->points);
+	char *last_commit =stoa((ssize_t)save->last_commit);
+
 	strcat(buf,"commits:" );
-	strcat(buf, stoa(save->commits));
+	strcat(buf, commits);
 	strcat(buf, "\npoints:");
-	strcat(buf, stoa(save->points));
+	strcat(buf, points);
 	strcat(buf, "\nlastcommit:");
-	strcat(buf, stoa((ssize_t)save->last_commit));
+	strcat(buf,last_commit);
+
+	free(commits);
+	free(points);
+	free(last_commit);
+
+
 	n = write(fd,buf, (strlen(buf) + 1));
 	if(n == -1)
 		printf("failed to write event file");
