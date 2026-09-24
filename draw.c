@@ -1,8 +1,13 @@
-
-#define CANVAS_START "\033[?25l\033[32m"
+#include "plant.h"
+#define CLEAR_TERMINAL "\033[2J"
+#define GO_TO_START "\033[H"
+#define HIDE_CURSOR "\033[?25l"
+#define GREEN_TEXT "\033[32m"
+#define CANVAS_START CLEAR_TERMINAL GO_TO_START HIDE_CURSOR GREEN_TEXT
 #define EMPTY "                                                        \n"
 #define SOIL "\033[43m                                                        \033[0m\n"
 #define SOIL_LAST "\033[43m                                                        \033[0m"
+#define START
 
 char level_0[] = CANVAS_START
 	EMPTY EMPTY EMPTY EMPTY EMPTY EMPTY EMPTY EMPTY EMPTY EMPTY EMPTY EMPTY
@@ -83,5 +88,7 @@ void draw_plant(int lvl)
 		return;
 	if (lvl > 5)
 		lvl = 5;
+
+	write(1, "\r", 1);
 	write(1, levels[lvl], strlen(levels[lvl]));
 }
