@@ -1,0 +1,55 @@
+#!/bin/sh
+
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+
+
+
+main() {
+    $SCRIPT_DIR/gitplant.bin
+}
+
+init() {
+    mkdir -p ~/.config/git/hooks && touch ~/.config/git/hooks/post-commit
+
+    cp $SCRIPT_DIR/scripts/post-commit ~/.config/git/hooks/post-commit
+
+    git config --global core.hooksPath ~/.config/git/hooks
+
+    chmod u=wrx ~/.config/git/hooks/post-commit
+
+
+    data_dir="${XDG_DATA_HOME:-"$HOME/.local/share"}/gitplant"
+    cp  "$SCRIPT_DIR/scripts/saves.txt" "$data_dir/save.txt"
+}
+
+help()
+{
+    cat <<EOF
+Usage:
+  $0 [COMMAND] [OPTIONS]
+
+Commands:
+  init        DO THIS FIRST! init environment
+  plant       starts gitplant
+  help        Show this help
+
+EOF
+}
+
+
+
+case "$1" in
+    init)
+        init
+        ;;
+    plant)
+        main
+        ;;
+    help)
+        help
+        ;;
+    *)
+        help
+        ;;
+
+esac
