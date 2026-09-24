@@ -35,10 +35,10 @@ int get_path(t_paths *paths);
 void get_log_path(t_paths *paths);
 void get_save_path(t_paths *paths);
 void write_save(t_paths *paths, t_save *save);
-char *stoa(long long num);
 void read_save(t_paths *paths, t_save *save);
 time_t get_commit_time(t_paths *paths, int commit_line);
 int count_commit(t_paths *paths);
 void draw_plant(int lvl);
+void draw_progress(int points);
 
 #endif

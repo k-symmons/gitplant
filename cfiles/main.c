@@ -13,6 +13,7 @@ int main()
 
 
 	read_save(&paths, &save);
+	draw_progress(save.points);
 	draw_plant(save.points / 1000);
 
 	while (1)
@@ -29,6 +30,7 @@ int main()
 				save.points += (log_commit_count-save.commits) *multi_base;
 			save.commits = log_commit_count;
 			save.last_commit = log_last_commit;
+			draw_progress(save.points);
 			draw_plant(save.points / 1000);
 		}
 		write_save(&paths, &save);
