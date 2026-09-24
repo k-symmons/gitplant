@@ -23,7 +23,7 @@ int main()
 		int log_commit_count = count_commit(&paths);
 		if((int)save.commits < log_commit_count)
 		{
-			int log_last_commit = get_commit_time(&paths, log_commit_count);
+			time_t log_last_commit = get_commit_time(&paths, log_commit_count);
 			if (log_last_commit - save.last_commit > c_24h_sec)
 				save.points += (log_commit_count-save.commits-1) *multi_base + (multi_base * multi_24h); //after 24h newest commit get a aditional multi
 			else
