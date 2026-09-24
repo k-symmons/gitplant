@@ -1,4 +1,4 @@
-NAME = gitplant.a
+NAME = ../gitplant.bin
 CC = gcc
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
