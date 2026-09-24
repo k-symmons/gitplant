@@ -8,6 +8,8 @@
 **gitplant** は、Git のコミット数に応じて植物が育っていく、Cベースの TUI アプリケーションです。
 
 コミットを積み重ねるほど、植物も成長していきます。
+<img width="524" height="375" alt="image" src="https://github.com/user-attachments/assets/8b0fe396-1a23-4aa0-a945-fbba3ab6d035" />
+
 
 ## インストール
 
