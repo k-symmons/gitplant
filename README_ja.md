@@ -1,4 +1,4 @@
-<p align="right">
+<p align="left">
   <a href="README.md">English</a> |
   <a href="README_ja.md">日本語</a>
 </p>
@@ -134,8 +134,3 @@ gitplant は Git のコミット活動を記録し、そのコミット数を植
 * Shell Script
 * Git
 * Git Hooks
-* Terminal / TUI
-
-## ライセンス
-
-ライセンス情報をここに記載してください。
