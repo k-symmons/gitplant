@@ -9,6 +9,9 @@
 
 The more you commit, the more your plant grows.
 
+<img width="524" height="375" alt="image" src="https://github.com/user-attachments/assets/7625aa84-3c5d-4e9f-b3a0-e4c9fa16ca20" />
+
+
 ## Installation
 
 Clone the repository:
