@@ -18,8 +18,10 @@ init() {
     chmod u=wrx ~/.config/git/hooks/post-commit
 
 
-    data_dir="${XDG_DATA_HOME:-"$HOME/.local/share"}/gitplant"
-    cp  "$SCRIPT_DIR/scripts/saves.txt" "$data_dir/save.txt"
+    DATA_DIR="${XDG_DATA_HOME:-"$HOME/.local/share"}/gitplant"
+
+    mkdir $DATA_DIR
+    cp  "$SCRIPT_DIR/scripts/saves.txt" "$DATA_DIR/save.txt"
 }
 
 help()
